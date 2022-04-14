@@ -1,5 +1,6 @@
 package com.example.convidados.service.repository
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.provider.ContactsContract
@@ -19,6 +20,42 @@ class GuestRepository private constructor(context: Context) {
                 repository = GuestRepository(context)
             }
             return GuestRepository(context)
+        }
+    }
+
+    @SuppressLint("Range")
+    fun get(id: Int): GuestModel? {
+
+        var guest: GuestModel? = null
+        return try {
+            val db = mGuestDataBaseHelper.writableDatabase
+            val projection = arrayOf(
+                DataBaseConstants.GUEST.COLUMNS.NAME,
+                DataBaseConstants.GUEST.COLUMNS.PRESENCE
+            )
+            val selection = DataBaseConstants.GUEST.COLUMNS.ID + " = ?"
+            val args = arrayOf(id.toString())
+            val cursor = db.query(
+                DataBaseConstants.GUEST.TABLE_NAME,
+                projection,
+                selection,
+                args,
+                null, null, null
+            )
+
+            if (cursor != null && cursor.count > 0) {
+                cursor.moveToFirst()
+                val name =
+                    cursor.getString(cursor.getColumnIndex(DataBaseConstants.GUEST.COLUMNS.NAME))
+                val presence =
+                    (cursor.getInt(cursor.getColumnIndex(DataBaseConstants.GUEST.COLUMNS.PRESENCE)) == 1)
+
+                guest = GuestModel(id, name, presence)
+            }
+            cursor?.close()
+            guest
+        } catch (e: Exception) {
+            guest
         }
     }
 
