@@ -13,4 +13,5 @@
     <string name="name">Nome:</string>
     <string name="confirmation">Confirmação</string>
     <string name="save">salvar</string>
+    <string name="add_guests">new</string>
 </resources>

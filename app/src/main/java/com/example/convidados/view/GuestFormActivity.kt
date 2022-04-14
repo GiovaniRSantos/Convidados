@@ -1,5 +1,6 @@
 package com.example.convidados.view
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -18,7 +19,8 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_guest_form)
+        binding = ActivityGuestFormBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         mViewModel = ViewModelProvider(this)[GuestFormViewModel::class.java]
 
@@ -28,10 +30,10 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View) {
         val id = v.id
-        if (id == R.id.button_save) {
-            val name = binding.editName.text.toString()
-            val presence = binding.radioPresence.isChecked
+        val name = binding.editName.text.toString()
+        val presence = binding.radioPresence.isChecked
 
+        if (id == R.id.button_save) {
             mViewModel.save(name, presence)
         }
     }
@@ -43,6 +45,7 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
             } else {
                 Toast.makeText(applicationContext, "Falha", Toast.LENGTH_SHORT).show()
             }
+            finish()
         })
     }
 
