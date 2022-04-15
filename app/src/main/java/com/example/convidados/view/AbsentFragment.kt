@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.convidados.databinding.FragmentSlideshowBinding
+import com.example.convidados.databinding.FragmentAbsentsBinding
 import com.example.convidados.viewmodel.AbsentViewModel
 
 class AbsentFragment : Fragment() {
 
-private var _binding: FragmentSlideshowBinding? = null
+private var _binding: FragmentAbsentsBinding? = null
   private val binding get() = _binding!!
 
   override fun onCreateView(
@@ -21,12 +21,12 @@ private var _binding: FragmentSlideshowBinding? = null
     savedInstanceState: Bundle?
   ): View {
     val slideshowViewModel =
-            ViewModelProvider(this).get(AbsentViewModel::class.java)
+        ViewModelProvider(this)[AbsentViewModel::class.java]
 
-    _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
+    _binding = FragmentAbsentsBinding.inflate(inflater, container, false)
     val root: View = binding.root
 
-    val textView: TextView = binding.textSlideshow
+    val textView: TextView = binding.textAbsents
     slideshowViewModel.text.observe(viewLifecycleOwner) {
       textView.text = it
     }

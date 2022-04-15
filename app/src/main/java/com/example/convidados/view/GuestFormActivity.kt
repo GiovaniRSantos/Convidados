@@ -1,11 +1,9 @@
 package com.example.convidados.view
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.convidados.R
 import com.example.convidados.databinding.ActivityGuestFormBinding
@@ -39,14 +37,14 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun observe() {
-        mViewModel.saveGuest.observe(this, Observer {
+        mViewModel.saveGuest.observe(this) {
             if (it) {
                 Toast.makeText(applicationContext, "Sucesso", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(applicationContext, "Falha", Toast.LENGTH_SHORT).show()
             }
             finish()
-        })
+        }
     }
 
     private fun setListeners() {

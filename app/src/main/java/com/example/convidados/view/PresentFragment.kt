@@ -7,34 +7,34 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.convidados.databinding.FragmentGalleryBinding
+import com.example.convidados.databinding.FragmentPresentsBinding
 import com.example.convidados.viewmodel.PresentViewModel
 
 class PresentFragment : Fragment() {
 
-private var _binding: FragmentGalleryBinding? = null
+    private var _binding: FragmentPresentsBinding? = null
 
-  private val binding get() = _binding!!
+    private val binding get() = _binding!!
 
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View {
-    val galleryViewModel =
-            ViewModelProvider(this).get(PresentViewModel::class.java)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val galleryViewModel =
+            ViewModelProvider(this)[PresentViewModel::class.java]
 
-    _binding = FragmentGalleryBinding.inflate(inflater, container, false)
-    val root: View = binding.root
+        _binding = FragmentPresentsBinding.inflate(inflater, container, false)
+        val root: View = binding.root
 
-    val textView: TextView = binding.textGallery
-    galleryViewModel.text.observe(viewLifecycleOwner) {
-      textView.text = it
+        val textView: TextView = binding.textPresents
+        galleryViewModel.text.observe(viewLifecycleOwner) {
+            textView.text = it
+        }
+        return root
     }
-    return root
-  }
 
-override fun onDestroyView() {
+    override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
