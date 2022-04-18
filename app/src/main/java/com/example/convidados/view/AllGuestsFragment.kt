@@ -1,6 +1,6 @@
 package com.example.convidados.view
 
-import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,54 +8,59 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.convidados.R
-import com.example.convidados.databinding.FragmentAbsentsBinding
+import com.example.convidados.service.constants.GuestConstants
 import com.example.convidados.view.adapter.GuestAdapter
-import com.example.convidados.viewmodel.AllGuestsViewModel
-
+import com.example.convidados.view.listener.GuestListener
+import com.example.convidados.viewmodel.GuestsViewModel
 
 class AllGuestsFragment : Fragment() {
 
-    private lateinit var allGuestsViewModel: AllGuestsViewModel
+    private lateinit var mViewModel: GuestsViewModel
     private val mAdapter: GuestAdapter = GuestAdapter()
-    private var _binding: FragmentAbsentsBinding? = null
+    private lateinit var mListener: GuestListener
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, s: Bundle?): View? {
+        mViewModel = ViewModelProvider(this).get(GuestsViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_all, container, false)
 
-    private val binding get() = _binding!!
+        val recycler = root.findViewById<RecyclerView>(R.id.recycler_all_guests)
 
-    @SuppressLint("InflateParams")
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        allGuestsViewModel =
-            ViewModelProvider(this)[AllGuestsViewModel::class.java]
+        recycler.layoutManager = LinearLayoutManager(context)
+        recycler.adapter = mAdapter
 
-        _binding = FragmentAbsentsBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        LayoutInflater.from(context).inflate(R.layout.fragment_all, null)
+        observe()
 
-        val recycler = view?.findViewById<RecyclerView>(R.id.recycler_all_guests)
+        mListener = object : GuestListener {
+            override fun onClick(id: Int) {
+                val intent = Intent(context, GuestFormActivity::class.java)
 
-        recycler?.adapter = mAdapter
+                val bundle = Bundle()
+                bundle.putInt(GuestConstants.GUESTID, id)
 
-        observer()
-        allGuestsViewModel.load()
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+
+            override fun onDelete(id: Int) {
+                mViewModel.delete(id)
+                mViewModel.load(GuestConstants.FILTER.EMPTY)
+            }
+        }
         return root
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun observer() {
-        allGuestsViewModel.guestList.observe(viewLifecycleOwner) {
+    override fun onResume() {
+        super.onResume()
+        mAdapter.attachListener(mListener)
+        mViewModel.load(GuestConstants.FILTER.EMPTY)
+    }
+
+    private fun observe() {
+        mViewModel.guestList.observe(viewLifecycleOwner, Observer {
             mAdapter.updateGuests(it)
-        }
+        })
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
 }
